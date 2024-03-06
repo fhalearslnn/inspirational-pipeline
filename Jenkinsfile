@@ -5,7 +5,7 @@ pipeline{
         maven 'Maven3'
     }
     environment {
-        APP_NAME = "complete-prodcution-e2e-pipeline"
+        APP_NAME = "completePipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "fhalearslan"
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
