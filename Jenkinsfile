@@ -72,7 +72,7 @@ pipeline{
             steps {
                 script {
                     // Retrieve DockerHub token from Jenkins credentials
-                    withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKER_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'jenkins-token', variable: 'DOCKER_TOKEN')]) {
                         
                         def dockerRegistryUrl = 'https://index.docker.io/v1/'
 
