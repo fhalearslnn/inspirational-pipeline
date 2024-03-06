@@ -102,7 +102,7 @@ pipeline{
             steps {
                 echo 'Pushing App Image to DockerHub Repo'
                 withCredentials([string(credentialsId: 'jenkins-token', variable: 'DOCKER_TOKEN')]) {
-                sh 'docker login -u $DOCKER_USER -p $DOCKER_TOKEN'
+                sh 'docker login -u $DOCKERHUB_USER -p $DOCKER_TOKEN'
                 sh 'docker push "$IMAGE_NAME"'
                 
             }
