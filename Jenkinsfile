@@ -68,27 +68,45 @@ pipeline{
 
         // }
 
-        stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    // Retrieve DockerHub token from Jenkins credentials
-                    withCredentials([string(credentialsId: 'jenkins-token', variable: 'DOCKER_TOKEN')]) {
+        // stage("Build & Push Docker Image") {
+        //     steps {
+        //         script {
+        //             // Retrieve DockerHub token from Jenkins credentials
+        //             withCredentials([string(credentialsId: 'jenkins-token', variable: 'DOCKER_TOKEN')]) {
                         
-                        def dockerRegistryUrl = 'https://hub.docker.com/'
+        //                 def dockerRegistryUrl = 'https://hub.docker.com/'
 
-                        // Build the Docker image
-                        docker.withRegistry(dockerRegistryUrl, DOCKER_TOKEN) {
-                            docker_image = docker.build "${IMAGE_NAME}"
-                        }
+        //                 // Build the Docker image
+        //                 docker.withRegistry(dockerRegistryUrl, DOCKER_TOKEN) {
+        //                     docker_image = docker.build "${IMAGE_NAME}"
+        //                 }
 
-                        // Push the Docker image to DockerHub
-                        docker.withRegistry(dockerRegistryUrl, DOCKER_TOKEN) {
-                            docker_image.push("${IMAGE_TAG}")
-                            docker_image.push('latest')
-                        }
-                    }
-                }
+        //                 // Push the Docker image to DockerHub
+        //                 docker.withRegistry(dockerRegistryUrl, DOCKER_TOKEN) {
+        //                     docker_image.push("${IMAGE_TAG}")
+        //                     docker_image.push('latest')
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Build App Docker Image') {
+            steps {
+                echo 'Building App Image'                
+                sh 'docker build --force-rm -t "$IMAGE_NAME" -f ./Dockerfile .'
+                sh 'docker image ls'
             }
+       }
+
+        stage('Push Image to Dockerhub Repo') {
+            steps {
+                echo 'Pushing App Image to DockerHub Repo'
+                withCredentials([string(credentialsId: 'jenkins-token', variable: 'DOCKER_TOKEN')]) {
+                sh 'docker login -u $DOCKER_USER -p $DOCKER_TOKEN'
+                sh 'docker push "$IMAGE_NAME"'
+                
+            }
+          }
         }
 
         stage("Trivy Scan") {
